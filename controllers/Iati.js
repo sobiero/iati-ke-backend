@@ -402,8 +402,7 @@ function getSqlParams(params, ignoreTrxnType)
     sql.yearRange = yearRange ;
     sql.all       = countySql + sdgSql + trxnTypeSql + yearRange;
 
-    
-    console.log(sql);
+    //console.log(sql);
     return sql ;
   
 }

@@ -33,4 +33,9 @@ router.get('/dashboard-data', (req, res, next) => {
    
 });
 
+router.get('/county-location-data', (req, res, next) => {
+   IatiController.getCountyLocationTotalAmt(req, res, next)
+   
+});
+
 module.exports = router

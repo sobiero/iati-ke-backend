@@ -407,6 +407,36 @@ function getSqlParams(params, ignoreTrxnType)
   
 }
 
+const getCountyLocationTotalAmt = (req, res, next) => {
+
+    var params = JSON.parse(req.query.params);
+    var a = getSqlParams(params);
+
+    sql = `WITH dist_rec AS ( SELECT DISTINCT county_code, county_name, location_name, location_latitude, location_longitude,
+                      aid, trans_date, trans_usd, trans_id 
+                FROM web.full_trans WHERE trans_date IS NOT NULL 
+                    AND (location_latitude NOT IN (-0.023559,-0.024) 
+                    AND location_longitude NOT IN (37.906193,37.906 )) 
+								 `+ a.all +`		 
+                )
+                SELECT county_code, county_name AS county_name, COALESCE(location_name, 'Not specified') AS location_name,
+                location_latitude, location_longitude, ROUND(SUM(trans_usd)) AS total 
+                 FROM dist_rec GROUP BY county_code, county_name, location_name, 
+                 location_latitude, location_longitude ORDER BY total DESC` ;
+
+    pg.pgDb.any(sql, [true])
+    .then(function(data) {
+        // success;
+        res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+    })
+    .catch(function(error) {
+        // error;
+        res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+    });
+}
+
+
+
 const getSdgById = (req, res, next) => {
     var sdgId = req.params.id
     res.json ( {'http-status': 200, msg: 'ok', 'data': "Hello from CRUD User"} )
@@ -420,4 +450,5 @@ module.exports = {
     getTransType,
     getDateRange,
     getDashboardData,
+    getCountyLocationTotalAmt,
 }

@@ -39,7 +39,7 @@ const getCounty = (req, res, next) => {
 
 const getTransType = (req, res, next) => {
 
-    pg.pgDb.any(`SELECT code, old_code, "name" FROM code.tran_type 
+    pg.pgDb.any(`SELECT code, old_code, "name", description FROM code.tran_type 
       WHERE code NOT IN ('10','13','5','6','2','12','8','7','9') ORDER BY "name" `, [true])
     .then(function(data) {
         // success;

@@ -32,6 +32,7 @@ router.get('/dashboard-data', (req, res, next) => {
    IatiController.getDashboardData(req, res, next)
 
    console.log( req.headers ); 
+   console.log( req.ips ); 
    
 });
 

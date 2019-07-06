@@ -40,4 +40,14 @@ router.delete('/:id', (req, res, next) => {
    
 })
 
+router.post('/interactions', upload.array(), (req, res, next) => {   
+    UserController.logInteraction(req, res, next)
+
+})
+
+router.post('/sus-questionnaire', upload.array(), (req, res, next) => {   
+    UserController.saveQuestionnaireResponse(req, res, next)
+
+})
+
 module.exports = router

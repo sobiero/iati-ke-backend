@@ -1,4 +1,4 @@
-//User Controller
+//IATI Controller
 var pg      = require('../models/pgpromise')
 var express = require('express')
 var router  = express.Router()

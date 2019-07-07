@@ -1,4 +1,5 @@
 //User Controller
+var pg      = require('../models/pgpromise')
 var User    = require('../models/User')
 var express = require('express')
 var router  = express.Router()
@@ -257,6 +258,111 @@ const authenticate = (req, res, next) => {
 
 }
 
+const logInteraction = (req, res, next) => {
+
+     console.log( req.body.params );
+     var d = req.body.params ;
+    //var params = JSON.parse(req.query.params);
+    //console.log( params );
+
+    pg.pgDb.one(`INSERT INTO web.activity_log (
+                      
+                      browser_id,
+                      user_params,
+                      dashboard_params,
+                      interaction_name,
+                      interaction_event,
+                      interaction_type,
+                      interaction_data,
+                      user_pref,
+                      interaction_time
+                      
+                      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 ) RETURNING id `, 
+                        
+                      [
+
+                       d.extras.browserId, 
+                       req.headers,
+                       d.extras.dashboardParams,
+                       d.name,
+                       d.event,
+                       d.type,
+                       d.data,
+                       d.extras.userPref,
+                       new Date()   
+                      
+                      ]
+                      )
+
+    .then(function(data) {
+        // success;
+        res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+    })
+    .catch(function(error) {
+        // error;
+        res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+    });
+
+}
+
+const saveQuestionnaireResponse = (req, res, next) => {
+
+     console.log( req.body.params );
+     var d = req.body.params ;
+    //var params = JSON.parse(req.query.params);
+    //console.log( params );
+
+    pg.pgDb.one(`INSERT INTO web.sus_questionnaire (
+                      browser_id,
+                      user_email,
+                      q1,
+                      q2,
+                      q3,
+                      q4,
+                      q5,
+                      q6,
+                      q7,
+                      q8,
+                      q9,
+                      q10,
+                      comments,
+                      extra_data,
+                      update_date
+                  
+                      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) RETURNING id `, 
+                        
+                      [
+
+                       d.extras.browserId, 
+                       d.extras.userPref.userEmail,
+                       d.qs.q1,
+                       d.qs.q2,
+                       d.qs.q3,
+                       d.qs.q4,
+                       d.qs.q5,
+                       d.qs.q6,
+                       d.qs.q7,
+                       d.qs.q8,
+                       d.qs.q9,
+                       d.qs.q10,
+                       d.qs.comments,
+                       req.headers,
+                       new Date()   
+                      
+                      ]
+                      )
+
+    .then(function(data) {
+        // success;
+        res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+    })
+    .catch(function(error) {
+        // error;
+        res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+    });
+
+}
+
 module.exports = {   
     welcomeMsg,
     findAll,
@@ -264,5 +370,7 @@ module.exports = {
     add,
     update,
     remove,
-    authenticate
+    authenticate,
+    logInteraction,
+    saveQuestionnaireResponse
 }

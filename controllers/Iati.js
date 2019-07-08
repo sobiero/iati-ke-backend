@@ -435,11 +435,37 @@ const getCountyLocationTotalAmt = (req, res, next) => {
     });
 }
 
-
-
 const getSdgById = (req, res, next) => {
     var sdgId = req.params.id
     res.json ( {'http-status': 200, msg: 'ok', 'data': "Hello from CRUD User"} )
+} 
+
+const search = (req, res, next) => {
+    var term = req.params.term;
+
+    console.log(term);
+
+    //const sql = pg.pgDb.format('SELECT DISTINCT location_name, county_code, county_name FROM web.full_trans WHERE location_name ILIKE $1 OR county_code ILIKE $1 OR  county_name ILIKE $1 ', [term]);
+    //console.log('SQL:', sql);
+
+    var termInt = parseInt(term);
+    termInt     = isNaN(termInt) ? -1 : termInt ;
+    
+    pg.pgDb.multi(`SELECT DISTINCT location_name, county_code, county_name FROM web.full_trans WHERE location_name ILIKE '%` + term + `%' OR county_code ILIKE '%` + term + `%' OR  county_name ILIKE '%` + term + `%'; SELECT DISTINCT sdg_id, sdg_name FROM web.full_trans WHERE sdg_id= `+ termInt +` OR sdg_name ILIKE '%` + term + `%'; SELECT code, old_code, name, description FROM code.tran_type WHERE (code LIKE '%`+ term +`%' OR "name" ILIKE '%` + term +`%' OR "description" ILIKE '%` + term +`%') AND code IN ('1','11','3','4') ` )
+     .then(data => {
+
+        var county = data[0];
+        var sdg    = data[1];
+        var trxn   = data[2];
+
+        res.json ( {'http-status': 200, msg: 'ok', 'data': { county:county, sdg:sdg, trxn:trxn } } ) ;
+        
+    })
+    .catch(error => {
+        console.log('ERROR:', error); // print the error;
+        res.json ( {'http-status': 200, msg: 'ok', 'data': error } )
+    });
+            
 } 
 
 module.exports = {   
@@ -451,4 +477,5 @@ module.exports = {
     getDateRange,
     getDashboardData,
     getCountyLocationTotalAmt,
+    search,
 }

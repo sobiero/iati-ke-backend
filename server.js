@@ -1,14 +1,17 @@
 const express    = require('express'),
       app        = express()
-      // bodyParser = require('body-parser'),
+      bodyParser = require('body-parser'),
       // multer     = require('multer'),
       // mongoose   = require('./models/mongoose')
+ 
+app.use(bodyParser());
      
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+app.set('trust proxy', true);
 
 app.use(require('./routes'));
 

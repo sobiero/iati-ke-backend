@@ -262,10 +262,8 @@ const logInteraction = (req, res, next) => {
 
      console.log( req.body.params );
      var d = req.body.params ;
-    //var params = JSON.parse(req.query.params);
-    //console.log( params );
 
-    pg.pgDb.one(`INSERT INTO web.activity_log (
+     pg.pgDb.one(`INSERT INTO web.activity_log (
                       
                       browser_id,
                       user_params,
@@ -309,10 +307,8 @@ const saveQuestionnaireResponse = (req, res, next) => {
 
      console.log( req.body.params );
      var d = req.body.params ;
-    //var params = JSON.parse(req.query.params);
-    //console.log( params );
 
-    pg.pgDb.one(`INSERT INTO web.sus_questionnaire (
+     pg.pgDb.one(`INSERT INTO web.sus_questionnaire (
                       browser_id,
                       user_email,
                       q1,

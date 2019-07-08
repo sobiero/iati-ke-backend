@@ -41,4 +41,10 @@ router.get('/county-location-data', (req, res, next) => {
    
 });
 
+router.get('/search/:term', (req, res, next) => {
+   
+   IatiController.search(req, res, next)
+   
+});
+
 module.exports = router

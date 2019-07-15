@@ -303,7 +303,7 @@ const logInteraction = (req, res, next) => {
 
 }
 
-const saveQuestionnaireResponse = (req, res, next) => {
+const saveSusQuestionnaireResponse = (req, res, next) => {
 
      console.log( req.body.params );
      var d = req.body.params ;
@@ -323,9 +323,10 @@ const saveQuestionnaireResponse = (req, res, next) => {
                       q10,
                       comments,
                       extra_data,
-                      update_date
+                      update_date,
+                      q_dump
                   
-                      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) RETURNING id `, 
+                      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 ) RETURNING id `, 
                         
                       [
 
@@ -343,7 +344,58 @@ const saveQuestionnaireResponse = (req, res, next) => {
                        d.qs.q10,
                        d.qs.comments,
                        req.headers,
-                       new Date()   
+                       new Date(),
+                       d.qs
+                      
+                      ]
+                      )
+
+    .then(function(data) {
+        // success;
+        res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+    })
+    .catch(function(error) {
+        // error;
+        res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+    });
+
+}
+
+const saveGenQuestionnaireResponse = (req, res, next) => {
+
+     console.log( req.body.params );
+     var d = req.body.params ;
+
+     pg.pgDb.one(`INSERT INTO web.gen_questionnaire (
+                      browser_id,
+                      user_email,
+                      g1,
+                      g2,
+                      g3,
+                      g4,
+                      g5,
+                      g6,
+                      comments,
+                      extra_data,
+                      update_date,
+                      g_dump
+                  
+                      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 ) RETURNING id `, 
+                        
+                      [
+
+                       d.extras.browserId, 
+                       d.extras.userPref.userEmail,
+                       d.qs.g1,
+                       d.qs.g2,
+                       d.qs.g3,
+                       d.qs.g4,
+                       d.qs.g5,
+                       d.qs.g6,
+                       d.qs.comments,
+                       req.headers,
+                       new Date(),
+                       d.qs
                       
                       ]
                       )
@@ -368,5 +420,7 @@ module.exports = {
     remove,
     authenticate,
     logInteraction,
-    saveQuestionnaireResponse
+    saveSusQuestionnaireResponse,
+    saveGenQuestionnaireResponse,
+
 }

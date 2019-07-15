@@ -46,7 +46,12 @@ router.post('/interactions', upload.array(), (req, res, next) => {
 })
 
 router.post('/sus-questionnaire', upload.array(), (req, res, next) => {   
-    UserController.saveQuestionnaireResponse(req, res, next)
+    UserController.saveSusQuestionnaireResponse(req, res, next)
+
+})
+
+router.post('/gen-questionnaire', upload.array(), (req, res, next) => {   
+    UserController.saveGenQuestionnaireResponse(req, res, next)
 
 })
 

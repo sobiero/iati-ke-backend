@@ -105,7 +105,7 @@ const getDashboardData = (req, res, next) => {
     var date = new Date();
     date.setDate(date.getDate()-15);
 
-    logPerformance('start' , uuid, browser_uuid, params, date );
+    logPerformance('start' , uuid, browser_uuid, params, date, null );
 
     getTotalAmt(a.all , 'USD')
     .then( totalAmt => {
@@ -155,7 +155,7 @@ const getDashboardData = (req, res, next) => {
 
        var date = new Date();
        date.setDate(date.getDate()-15);
-       logPerformance('end' , uuid, browser_uuid, params, date );
+       logPerformance('end' , uuid, browser_uuid, params, date, data);
 
        res.json ( {'http-status': 200, msg: 'ok', 'data': data } );
     
@@ -170,7 +170,7 @@ const getDashboardData = (req, res, next) => {
 }
 
 //logPerformance('start' , uuid, browserid, params, Date.now() );
-const logPerformance = (startEnd, uuid, browser_uuid, dashboard_params, date_time ) => {
+const logPerformance = (startEnd, uuid, browser_uuid, dashboard_params, date_time, data ) => {
 
   console.log( "start=" + startEnd + "  uuid=" + uuid + " browser=" + browser_uuid + " dashboard=" + dashboard_params + " datetime=" + date_time );
 
@@ -207,11 +207,12 @@ const logPerformance = (startEnd, uuid, browser_uuid, dashboard_params, date_tim
   } else if (startEnd == 'end' )
   {
 
-      pg.pgDb.none(`UPDATE web.performance_log SET res_time = $1 WHERE uuid = $2 `, 
+      pg.pgDb.none(`UPDATE web.performance_log SET res_time = $1, res_data =$2 WHERE uuid = $3 `, 
                         
                       [
 
                       date_time,
+                      data,
                       uuid,
 
                       ]

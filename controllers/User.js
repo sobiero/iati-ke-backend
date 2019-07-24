@@ -260,7 +260,7 @@ const authenticate = (req, res, next) => {
 
 const logInteraction = (req, res, next) => {
 
-     console.log( req.body.params );
+     //console.log( req.body.params );
      var d = req.body.params ;
 
      pg.pgDb.one(`INSERT INTO web.activity_log (
@@ -305,7 +305,7 @@ const logInteraction = (req, res, next) => {
 
 const saveSusQuestionnaireResponse = (req, res, next) => {
 
-     console.log( req.body.params );
+     //console.log( req.body.params );
      var d = req.body.params ;
 
      pg.pgDb.one(`INSERT INTO web.sus_questionnaire (
@@ -363,7 +363,7 @@ const saveSusQuestionnaireResponse = (req, res, next) => {
 
 const saveGenQuestionnaireResponse = (req, res, next) => {
 
-     console.log( req.body.params );
+     //console.log( req.body.params );
      var d = req.body.params ;
 
      pg.pgDb.one(`INSERT INTO web.gen_questionnaire (

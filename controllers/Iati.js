@@ -3,6 +3,7 @@ var pg      = require('../models/pgpromise')
 var express = require('express')
 var router  = express.Router()
 var config  = require('../config/app')
+const uuidv4 = require('uuid/v4')
 
 const welcomeMsg = (req, res, next) => {
     res.json ( {'http-status': 200, msg: 'ok', 'data': "Welcome from IATI"} )
@@ -91,7 +92,20 @@ const getDashboardData = (req, res, next) => {
     var params = JSON.parse(req.query.params);
     var a = getSqlParams(params);
     var b = getSqlParams(params, true); //Ignore trxn type
-    var data = {}
+    var data = {};
+
+    var browser_uuid = req.headers.browser_uuid = null ? req.headers.browser_uuid : null ;
+    var uuid      = uuidv4() ;
+
+    //console.log( params );
+    console.log( req.headers );
+    //console.log( uuidv4() );
+    //console.log( Date.now() );
+
+    var date = new Date();
+    date.setDate(date.getDate()-15);
+
+    logPerformance('start' , uuid, browser_uuid, params, date );
 
     getTotalAmt(a.all , 'USD')
     .then( totalAmt => {
@@ -138,6 +152,11 @@ const getDashboardData = (req, res, next) => {
     .then( (getTotalAmtByCounty) => {
 
        data.totalAmtByCounty = getTotalAmtByCounty ;
+
+       var date = new Date();
+       date.setDate(date.getDate()-15);
+       logPerformance('end' , uuid, browser_uuid, params, date );
+
        res.json ( {'http-status': 200, msg: 'ok', 'data': data } );
     
     })
@@ -147,6 +166,68 @@ const getDashboardData = (req, res, next) => {
       res.json ( {'http-status': 200, msg: 'ok', 'data': err } );
     
     });
+
+}
+
+//logPerformance('start' , uuid, browserid, params, Date.now() );
+const logPerformance = (startEnd, uuid, browser_uuid, dashboard_params, date_time ) => {
+
+  console.log( "start=" + startEnd + "  uuid=" + uuid + " browser=" + browser_uuid + " dashboard=" + dashboard_params + " datetime=" + date_time );
+
+  if (startEnd == 'start' )
+  {
+      pg.pgDb.one(`INSERT INTO web.performance_log (
+                      uuid,
+                      browser_uuid,
+                      dashboard_params,
+                      req_time                     
+                      ) VALUES ($1, $2, $3, $4 ) RETURNING id `, 
+                        
+                      [
+
+                      uuid, 
+                      browser_uuid, 
+                      dashboard_params,
+                      date_time,
+
+                      ]
+                      )
+      .then(function(data) {
+          // success;
+          //res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+      })
+      .catch(function(error) {
+          console.log( error );
+          // error;
+          //res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+      });
+
+
+
+  } else if (startEnd == 'end' )
+  {
+
+      pg.pgDb.none(`UPDATE web.performance_log SET res_time = $1 WHERE uuid = $2 `, 
+                        
+                      [
+
+                      date_time,
+                      uuid,
+
+                      ]
+
+                      )
+      .then(function(data) {
+          // success;
+          //res.json ( {'http-status': 200, msg: 'ok', 'data': data } )
+      })
+      .catch(function(error) {
+          // error;
+          //res.json ( {'http-status': 503, msg: 'ok', 'data': error } )
+      });
+
+  } 
+
 
 }
 
@@ -443,7 +524,7 @@ const getSdgById = (req, res, next) => {
 const search = (req, res, next) => {
     var term = req.params.term;
 
-    console.log(term);
+    //console.log(term);
 
     //const sql = pg.pgDb.format('SELECT DISTINCT location_name, county_code, county_name FROM web.full_trans WHERE location_name ILIKE $1 OR county_code ILIKE $1 OR  county_name ILIKE $1 ', [term]);
     //console.log('SQL:', sql);
@@ -476,6 +557,7 @@ module.exports = {
     getTransType,
     getDateRange,
     getDashboardData,
+    logPerformance,
     getCountyLocationTotalAmt,
     search,
 }

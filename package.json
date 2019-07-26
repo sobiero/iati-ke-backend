@@ -1,6 +1,6 @@
 {
-  "name": "IATI-api",
-  "version": "1.0.0",
+  "name": "iati-ke-api",
+  "version": "0.1.0",
   "description": "IATI api by simon",
   "main": "server.js",
   "scripts": {

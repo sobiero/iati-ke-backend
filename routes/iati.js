@@ -30,10 +30,8 @@ router.get('/date-range', (req, res, next) => {
 
 router.get('/dashboard-data', (req, res, next) => {
    IatiController.getDashboardData(req, res, next)
-
    //console.log( req.headers ); 
-   //console.log( req.ips ); 
-   
+    
 });
 
 router.get('/county-location-data', (req, res, next) => {
@@ -41,8 +39,7 @@ router.get('/county-location-data', (req, res, next) => {
    
 });
 
-router.get('/search/:term', (req, res, next) => {
-   
+router.get('/search/:term', (req, res, next) => {  
    IatiController.search(req, res, next)
    
 });

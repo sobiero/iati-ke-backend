@@ -103,7 +103,7 @@ const getDashboardData = (req, res, next) => {
     //console.log( Date.now() );
 
     var date = new Date();
-    date.setDate(date.getDate()-15);
+    //date.setDate(date.getDate()-15);
 
     logPerformance('start' , uuid, browser_uuid, params, date, null );
 
@@ -526,7 +526,6 @@ const search = (req, res, next) => {
     var term = req.params.term;
 
     //console.log(term);
-
     //const sql = pg.pgDb.format('SELECT DISTINCT location_name, county_code, county_name FROM web.full_trans WHERE location_name ILIKE $1 OR county_code ILIKE $1 OR  county_name ILIKE $1 ', [term]);
     //console.log('SQL:', sql);
 

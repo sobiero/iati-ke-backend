@@ -10,7 +10,7 @@ router.use('/api/iati', require('./iati'));
 
 
 router.get('/api', (req, res ) => {
-  res.json("Hello from Crud");
+  res.json("Hello from IATI-KE API");
 });
 
 module.exports = router ;

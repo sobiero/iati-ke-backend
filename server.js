@@ -16,7 +16,7 @@ app.set('trust proxy', true);
 app.use(require('./routes'));
 
 app.get('/api', (req, res) => {
-  res.json('Hello From CRUD Api')
+  res.json('Hello From IATI-KE Api')
 });
 
 app.listen(10015, () => {

@@ -154,7 +154,7 @@ const getDashboardData = (req, res, next) => {
        data.totalAmtByCounty = getTotalAmtByCounty ;
 
        var date = new Date();
-       date.setDate(date.getDate()-15);
+       
        logPerformance('end' , uuid, browser_uuid, params, date, data);
 
        res.json ( {'http-status': 200, msg: 'ok', 'data': data } );
